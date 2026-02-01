@@ -1,10 +1,5 @@
 The authors of "Generation of Test Orders for Efficient Order-Dependent Flaky Test Detection" make their best attempt to anonymize the following artifacts. Note that it may still be possible to reveal the identities of the authors by deeply studying the artifacts.
 
-## Additional Data for FSE rebuttal:
-
-1. Reviewer A. Q1: Comparison of the % of OD detection between TuscanE, Tuscan interclass & Pairwise when orders are generated and run simultaneously up to 60 minutes simultaneously:
-
-![Percentage of OD Detected by Minute(Upto-60 Minutes)](od_detection_graph.png)
 
 ## Artifact:
 
