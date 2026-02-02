@@ -1,3 +1,0 @@
-Manifest-Version: 1.0
-Premain-Class: edu.illinois.cs.testrunner.agent.MainAgent
-Can-Retransform-Classes: true
