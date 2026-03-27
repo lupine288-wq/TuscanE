@@ -2,15 +2,14 @@ The authors of "Generation of Test Orders for Efficient Order-Dependent Flaky Te
 
 ISSTA-2026 Rebuttal Respone
 1. Reviewer.B.Question4
-Pairwise coverage by each approach- coverage.png
+Pairwise coverage by each approach : coverage.png
 
 2. Reviewer.B.Question5:
-Generation time in percentage of the total test suite runtime
-Generation_time_percentage.csv
+Generation time in percentage of the total test suite runtime : Generation_time_percentage.csv
 
 3. Reviewer.A. Comment:
-OD detection results by each Approach
-OD_detection.csv
+OD detection results by each Approach : OD_detection.csv
+
 
 ## Artifact:
 
