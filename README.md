@@ -1,5 +1,16 @@
 The authors of "Generation of Test Orders for Efficient Order-Dependent Flaky Test Detection" make their best attempt to anonymize the following artifacts. Note that it may still be possible to reveal the identities of the authors by deeply studying the artifacts.
 
+ISSTA-2026 Rebuttal Respone
+1. Reviewer.B.Question4
+Pairwise coverage by each approach- coverage.png
+
+2. Reviewer.B.Question5:
+Generation time in percentage of the total test suite runtime
+Generation_time_percentage.csv
+
+3. Reviewer.A. Comment:
+OD detection results by each Approach
+OD_detection.csv
 
 ## Artifact:
 
