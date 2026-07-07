@@ -2,7 +2,7 @@
 
 1. Code for TuscanE to generate test-orders : inside the TuscanECodes/ directory
 
-2. Tuscan inter-class code from the paper "Systematically Producing Test-Orders to Detect Order-Dependent Flaky Tests" - https://sites.google.com/view/systematically-detecting-od/home
+2. TuscanE code from the paper "Systematically Producing Test-Orders to Detect Order-Dependent Flaky Tests"
 
 3. Code for "pairwise" approach to generate test-orders - inside the PairwiseCodes/ directory
 

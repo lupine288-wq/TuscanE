@@ -199,43 +199,19 @@ public class TestShuffler {
 
 
     public java.util.Map.Entry<List<List<String>>, List<String[]>> tuscanInterClassNewOrders() {
-        // Sort classes by descending number of methods (unchanged)
         List<String> sortedClasses = new ArrayList<>(classToMethods.keySet());
         Collections.sort(sortedClasses, (a, b) -> classToMethods.get(b).size() - classToMethods.get(a).size());
 
-        // Build permutation matrices for each class
         HashMap<String, int[][]> classToPermutationsNew = new HashMap<>();
         for (String className : sortedClasses) {
             int methodSize = classToMethods.get(className).size();
             int[][] result;
             if (methodSize == 3) {
-                // KEEP method rows pattern:
-                // A B C
-                // B A C
-                // C A
-                // C B
-                result = new int[][]{
-                        {0, 1, 2, 0}, // A B C
-                        {1, 0, 2, 0}, // B A C
-                        {2, 0, 0},    // C A
-                        {2, 1, 1}     // C B
-                };
+                result = new int[][]{ {0, 1, 2, 0}, {1, 0, 2, 0}, {2, 1, 0, 0}, {2, 0, 1, 0} };
             } else if (methodSize == 5) {
-                // MINIMAL CHANGE: hard-code rows to match
-                // AEBDC
-                // BACED
-                // CADBE
-                // EABCD
-                // DECB
-                // DA
-                // (add a trailing duplicate element so we still "drop the last" with length-1 logic)
                 result = new int[][]{
-                        {0, 4, 1, 3, 2, 0}, // AEBDC
-                        {1, 0, 2, 4, 3, 1}, // BACED
-                        {2, 0, 3, 1, 4, 2}, // CADBE
-                        {4, 0, 1, 2, 3, 4}, // EABCD
-                        {3, 4, 2, 1, 3},    // DECB
-                        {3, 0, 3}           // DA
+                        {0, 4, 1, 3, 2, 0}, {1, 0, 2, 4, 3, 1}, {2, 0, 3, 1, 4, 2},
+                        {4, 0, 1, 2, 3, 4}, {3, 4, 2, 1, 0, 3}, {3, 0, 1, 2, 4, 3}
                 };
             } else {
                 result = Tuscan.generateTuscanPermutations(methodSize);
@@ -243,68 +219,128 @@ public class TestShuffler {
             classToPermutationsNew.put(className, result);
         }
 
-        // Determine number of orders from the first (largest) class (unchanged)
         String firstClass = sortedClasses.get(0);
-        int[][] firstMatrix = classToPermutationsNew.get(firstClass);
-        int totalOrders = firstMatrix.length;
+        int maxTests = classToMethods.get(firstClass).size();
 
-        // Tuscan square over CLASSES (default)
         int n = sortedClasses.size();
         int[][] classTuscan = Tuscan.generateTuscanPermutations(n);
         int classRows = classTuscan.length;
 
+        int totalOrders;
+        if (n >= maxTests) {
+            totalOrders = classRows;
+        } else {
+            totalOrders = classToPermutationsNew.get(firstClass).length;
+        }
+
         List<List<String>> newOrders = new ArrayList<>();
         List<String[]> interClassPairs = new ArrayList<>();
+        java.util.Set<String> alreadyCovered = new java.util.HashSet<>();
 
-        // Generate each new order (row)
         for (int orderIndex = 0; orderIndex < totalOrders; orderIndex++) {
             List<String> order = new ArrayList<>();
 
-            // For CLASS rows when n==3, use:
-            // A B C
-            // B A C
-            // C A B
-            // C B A
             int[] classRow;
             int usableLen;
             if (n == 3) {
+                int[][] customClassRows = new int[][]{ {0, 1, 2}, {1, 0, 2}, {2, 1, 0}, {2, 0, 1} };
+                classRow = customClassRows[orderIndex % customClassRows.length];
+                usableLen = classRow.length;
+            } else if (n == 5) {
                 int[][] customClassRows = new int[][]{
-                        {0, 1, 2}, // A B C
-                        {1, 0, 2}, // B A C
-                        {2, 0, 1}, // C A B
-                        {2, 1, 0}  // C B A
+                        {0, 4, 1, 3, 2}, {1, 0, 2, 4, 3}, {2, 0, 3, 1, 4},
+                        {4, 0, 1, 2, 3}, {3, 4, 2, 1, 0}, {3, 0, 1, 2, 4}
                 };
                 classRow = customClassRows[orderIndex % customClassRows.length];
                 usableLen = classRow.length;
             } else {
                 classRow = classTuscan[orderIndex % classRows];
-                usableLen = Math.max(0, classRow.length - 1); // drop duplicated last cell
+                usableLen = Math.max(0, classRow.length - 1);
             }
 
-            // Process each class in the chosen order
+            String[] leftChoices = new String[usableLen];
+            String[] rightChoices = new String[usableLen];
+            List<List<String>> fixedBlocks = new ArrayList<>(Collections.nCopies(usableLen, null));
+
             for (int k = 0; k < usableLen; k++) {
-                int classIdx = classRow[k];
-                if (classIdx < 0 || classIdx >= n) continue;
-
-                String className = sortedClasses.get(classIdx);
+                String className = sortedClasses.get(classRow[k]);
                 List<String> methods = classToMethods.get(className);
-                if (methods == null || methods.isEmpty()) continue;
-
                 int[][] matrix = classToPermutationsNew.get(className);
-                int rows = matrix.length;
 
-                // do NOT wrap: if this class exhausted its method rows, skip it
-                if (orderIndex >= rows) continue;
-                int rowToUse = orderIndex;
+                int rowToUse = orderIndex % matrix.length;
 
-                int[] permutation = matrix[rowToUse];
-                // Take only the first (permutation.length - 1) entries (drop trailing duplicate)
-                for (int m = 0; m < permutation.length - 1; m++) {
-                    order.add(methods.get(permutation[m]));
+                List<String> block = new ArrayList<>();
+                int[] perm = matrix[rowToUse];
+                for (int m = 0; m < perm.length - 1; m++) {
+                    block.add(methods.get(perm[m]));
+                }
+                fixedBlocks.set(k, block);
+                leftChoices[k] = block.get(0);
+                rightChoices[k] = block.get(block.size() - 1);
+            }
+
+            for (int k = 0; k < usableLen - 1; k++) {
+                String classL = sortedClasses.get(classRow[k]);
+                String classR = sortedClasses.get(classRow[k + 1]);
+                List<String> methodsL = classToMethods.get(classL);
+                List<String> methodsR = classToMethods.get(classR);
+
+                String bestL = fixedBlocks.get(k) != null ? rightChoices[k] : null;
+                String bestR = fixedBlocks.get(k + 1) != null ? leftChoices[k + 1] : null;
+                boolean found = false;
+
+                if (bestL != null && bestR != null) {
+                    found = true;
+                } else if (bestL != null) {
+                    for (String mR : methodsR) {
+                        if (!alreadyCovered.contains(bestL + "||" + mR)) { bestR = mR; found = true; break; }
+                    }
+                    if (!found) bestR = methodsR.get(0);
+                } else if (bestR != null) {
+                    for (String mL : methodsL) {
+                        if (!alreadyCovered.contains(mL + "||" + bestR)) { bestL = mL; found = true; break; }
+                    }
+                    if (!found) bestL = methodsL.get(0);
+                } else {
+                    for (String mL : methodsL) {
+                        for (String mR : methodsR) {
+                            if (!alreadyCovered.contains(mL + "||" + mR)) { bestL = mL; bestR = mR; found = true; break; }
+                        }
+                        if (found) break;
+                    }
+                    if (!found) { bestL = methodsL.get(0); bestR = methodsR.get(0); }
+                }
+
+                rightChoices[k] = bestL;
+                leftChoices[k + 1] = bestR;
+                alreadyCovered.add(bestL + "||" + bestR);
+            }
+
+            for (int k = 0; k < usableLen; k++) {
+                if (fixedBlocks.get(k) != null) {
+                    order.addAll(fixedBlocks.get(k));
+                } else {
+                    String first = leftChoices[k];
+                    String last = rightChoices[k];
+                    if (first == null && last == null) {
+                        first = classToMethods.get(sortedClasses.get(classRow[k])).get(0);
+                        last = first;
+                    } else if (first == null) {
+                        first = last;
+                    } else if (last == null) {
+                        last = first;
+                    }
+                    order.add(first);
+                    if (!first.equals(last)) { order.add(last); }
                 }
             }
 
-            // collect INTER-CLASS adjacent pairs from this order
+            List<String> merged = new ArrayList<>();
+            for (String t : order) {
+                if (merged.isEmpty() || !merged.get(merged.size() - 1).equals(t)) merged.add(t);
+            }
+            order = merged;
+
             for (int i = 0; i + 1 < order.size(); i++) {
                 String left = order.get(i);
                 String right = order.get(i + 1);
@@ -312,9 +348,9 @@ public class TestShuffler {
                 String rightCls = right.substring(0, right.lastIndexOf('.'));
                 if (!leftCls.equals(rightCls)) {
                     interClassPairs.add(new String[]{left, right});
+                    alreadyCovered.add(left + "||" + right);
                 }
             }
-
             newOrders.add(order);
         }
 
