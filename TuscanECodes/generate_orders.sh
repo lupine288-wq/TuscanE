@@ -26,7 +26,12 @@ while IFS= read -r line; do
     repo=$(echo "$project" | cut -d "/" -f 2)
     short_sha=${sha: 0: 7}
     method=$2
-    output_path="outputs/$method/${author}/${repo}/${module}/${short_sha}"
+    if [[ "$module" == "." ]]; then
+      output_module="$repo"
+    else
+      output_module=$(basename "$module")
+    fi
+    output_path="outputs/$output_module"
     mkdir -p "$output_path"
 
     rm -f tuscan/orders/Tuscan.class tuscan/orders/TestShuffler.class GetTuscanOrders.class

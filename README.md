@@ -2,11 +2,11 @@
 
 1. Code for TuscanE to generate test-orders : inside the TuscanECodes/ directory
 
-2. TuscanE code from the paper "Systematically Producing Test-Orders to Detect Order-Dependent Flaky Tests"
+2. Tuscan inter-class code from the paper "Systematically Producing Test-Orders to Detect Order-Dependent Flaky Tests" - https://sites.google.com/view/systematically-detecting-od/home
 
 3. Code for "pairwise" approach to generate test-orders - inside the PairwiseCodes/ directory
 
-4. Details of the Modules used in our Dataset - subjects.csv file
+4. Details of the subjects used in our experiment are available in [subjects.csv](subjects.csv).
 
 ## Setup
 
@@ -34,5 +34,15 @@ bash generate_orders.sh modules.csv inter
 Input: modules.csv, `original-orders`  
 Output: Test orders saved to the outputs/ directory  
 Original test orders: Stored in the original-orders/ directory
+
+For pairwise test orders in the same `round*.json` format:
+```bash
+python3 PairwiseCodes/orderpairwise.py --input-dir TuscanECodes/original-orders --output-dir outputs
+```
+
+To run OD detection on either TuscanE or pairwise outputs:
+```bash
+python3 od_detection.py outputs
+```
 
 TuscanE can be used by generating the orders and executing them with existing tools (e.g., Original-Order mode of iDFlakies- https://github.com/UT-SE-Research/iDFlakies)

@@ -35,7 +35,9 @@ public class GetTuscanOrders {
 	    // We have orders generate its tuscan orders and get the list
             TestShuffler testShuffler = new TestShuffler(tests);
             
-            String outputPathPrefix = "outputs/" + method + "/" + project + "/" + module + "/" + sha + "/";
+            Path oldOutputPath = Paths.get("outputs", method).resolve(project).resolve(module).resolve(sha).normalize();
+            String outputModule = oldOutputPath.getParent().getFileName().toString();
+            String outputPathPrefix = "outputs/" + outputModule + "/";
 
             switch (method) {
                 case "only":
@@ -77,6 +79,7 @@ public class GetTuscanOrders {
         // String outFile = String.format("outputs/round%d.json", i);
         String outFile = prefix + "round" + i + ".json";
         try {
+            new File(prefix).mkdirs();
             FileWriter file = new FileWriter(outFile);
             file.write(jsonObject.toJSONString());
             file.close();

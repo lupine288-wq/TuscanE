@@ -2,6 +2,8 @@
 from pathlib import Path
 import itertools
 import csv
+import json
+import random
 import time
 import argparse
 import sys
@@ -54,6 +56,47 @@ def safe_name(s: str) -> str:
 def generate_unordered_pairs(items: List[str]):
     yield from itertools.combinations(items, 2)
 
+def output_module_name(project: str, module: str, method: str, sha: str) -> str:
+    old_output_path = Path("outputs") / method / project / module / sha[:7]
+    return old_output_path.parent.name
+
+def original_order_filename(project: str, module: str, sha: str) -> str:
+    cproject = project.replace("/", "_")
+    cmodule = module.replace("/", "_")
+    return f"{cproject}-{cmodule}-{sha[:7]}-original_order"
+
+def fallback_output_name(input_file: Path) -> str:
+    name = input_file.name
+    suffix = "-original_order"
+    return name[:-len(suffix)] if name.endswith(suffix) else input_file.stem
+
+def load_output_name_map(modules_csv: Path) -> Dict[str, str]:
+    name_map = {}
+    if not modules_csv or not modules_csv.is_file():
+        return name_map
+
+    with modules_csv.open('r', encoding='utf-8', errors='ignore', newline='') as f:
+        reader = csv.reader(f)
+        rows = list(reader)
+
+    if rows and rows[0][:3] == ["Project", "SHA", "Module"]:
+        rows = rows[1:]
+
+    for row in rows:
+        if len(row) < 3:
+            continue
+        project, sha, module = row[0], row[1], row[2]
+        name_map[original_order_filename(project, module, sha)] = output_module_name(project, module, "inter", sha)
+    return name_map
+
+def resolve_repo_path(path: str) -> Path:
+    p = Path(path)
+    if p.is_absolute() or p.exists():
+        return p
+    repo_root = Path(__file__).resolve().parent.parent
+    repo_path = repo_root / path
+    return repo_path if repo_path.exists() else p
+
 def build_short_names(originals: List[str]) -> Tuple[List[str], Dict[str, str], Dict[str, Tuple[int, str]]]:
     # First pass: identify class names and assign class indices/tokens
     class_order = []
@@ -83,14 +126,29 @@ def build_short_names(originals: List[str]) -> Tuple[List[str], Dict[str, str], 
 
     return short_list, mapping, class_info
 
-def write_orders_for_file(input_file: Path, output_root: Path, use_shorten: bool, content_mode: str) -> dict:
+def write_orders_for_file(input_file: Path, output_root: Path, use_shorten: bool, content_mode: str,
+                          output_name_map: Dict[str, str], simplified_dir: Path, random_seed: int) -> dict:
     start = time.time()
     originals = read_tests_from_file(input_file)
 
-    out_dir = output_root / input_file.stem
+    out_dir = output_root / output_name_map.get(input_file.name, fallback_output_name(input_file))
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    if use_shorten:
+    simplified_file = simplified_dir / input_file.name if simplified_dir else None
+    if simplified_file and simplified_file.is_file() and content_mode == "short":
+        name_for_file = read_tests_from_file(simplified_file)
+        if len(name_for_file) != len(originals):
+            raise ValueError(f"Length mismatch between {input_file} and {simplified_file}")
+        mapping = {orig: short for orig, short in zip(originals, name_for_file)}
+        with (out_dir / "mapping.csv").open('w', encoding='utf-8', newline='') as mf:
+            w = csv.writer(mf)
+            w.writerow(["original", "short"])
+            for orig in originals:
+                w.writerow([orig, mapping[orig]])
+        with (out_dir / "normalized.txt").open('w', encoding='utf-8') as nf:
+            for s in name_for_file:
+                nf.write(s + "\n")
+    elif use_shorten:
         short_list, mapping, class_info = build_short_names(originals)
         name_for_file = short_list  # used for pair generation and filenames
         # Persist mapping CSV
@@ -115,46 +173,36 @@ def write_orders_for_file(input_file: Path, output_root: Path, use_shorten: bool
         name_for_file = originals
 
     pairs_idx = list(itertools.combinations(range(len(name_for_file)), 2))
-    num_pairs = len(pairs_idx)
+    if random_seed is not None:
+        random.Random(random_seed).shuffle(pairs_idx)
+    num_orders = len(pairs_idx) * 2
 
     # Determine content mode
     effective_mode = content_mode
     if not use_shorten and content_mode == "short":
         effective_mode = "original"
 
-    width = max(4, len(str(num_pairs)))
     filenames = []
-    for idx, (i, j) in enumerate(pairs_idx, start=1):
-        if effective_mode == "short":
-            t1 = name_for_file[i]
-            t2 = name_for_file[j]
-        elif effective_mode == "original":
-            # map back to originals
-            t1 = originals[i]
-            t2 = originals[j]
-        else:
-            # both-with-comments: include originals as comments, write short on two lines
-            t1 = name_for_file[i]
-            t2 = name_for_file[j]
-
-        # Filename should be short when available for performance/length
-        if use_shorten:
-            base_fname = f"{safe_name(name_for_file[i])}__{safe_name(name_for_file[j])}"
-        else:
-            base_fname = f"{safe_name(originals[i])}__{safe_name(originals[j])}"
-
-        fname = f"{str(idx).zfill(width)}_{base_fname}.txt"
-        fpath = out_dir / fname
-        with fpath.open('w', encoding='utf-8') as f:
+    round_idx = 0
+    for i, j in pairs_idx:
+        for first, second in ((i, j), (j, i)):
             if effective_mode == "short":
-                f.write(f"{t1}\n{t2}\n")
+                t1 = name_for_file[first]
+                t2 = name_for_file[second]
             elif effective_mode == "original":
-                f.write(f"{t1}\n{t2}\n")
-            else:  # both-with-comments
-                f.write(f"# ORIGINAL: {originals[i]}\n# ORIGINAL: {originals[j]}\n")
-                f.write(f"{t1}\n{t2}\n")
+                t1 = originals[first]
+                t2 = originals[second]
+            else:
+                t1 = name_for_file[first]
+                t2 = name_for_file[second]
 
-        filenames.append(fname)
+            fname = f"round{round_idx}.json"
+            fpath = out_dir / fname
+            with fpath.open('w', encoding='utf-8') as f:
+                json.dump({"testOrder": [t1, t2]}, f)
+
+            filenames.append(fname)
+            round_idx += 1
 
     # Write manifest
     manifest_path = out_dir / "manifest.txt"
@@ -166,19 +214,24 @@ def write_orders_for_file(input_file: Path, output_root: Path, use_shorten: bool
     return {
         "input_file": str(input_file),
         "num_tests": len(originals),
-        "num_orders": num_pairs,
+        "num_orders": num_orders,
         "duration_seconds": round(duration, 6),
         "output_subfolder": str(out_dir),
         "manifest_file": str(manifest_path),
     }
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description="Generate UNORDERED pair orders from test name files (with optional shortening).")
+    parser = argparse.ArgumentParser(description="Generate UNORDERED pair orders as round*.json files.")
     parser.add_argument("--input-dir", required=True, help="Folder with fully-qualified test names (one per line per file).")
-    parser.add_argument("--output-dir", default=None, help="Output folder (default: <input-dir>/orders_out)")
+    parser.add_argument("--output-dir", default="outputs", help="Output folder (default: outputs)")
+    parser.add_argument("--modules-csv", default="TuscanECodes/modules.csv", help="CSV used to map input files to module output folders.")
+    parser.add_argument("--simplified-dir", default="TuscanECodes/simplified_original_test_orders",
+                        help="Folder with simplified names matching the original order files.")
     parser.add_argument("--no-shorten-names", action="store_true", help="Disable name shortening (use original names everywhere).")
     parser.add_argument("--content", choices=["original", "short", "both"], default="short",
                         help="What to write inside each order file. Default: short. If --no-shorten-names, coerced to original.")
+    parser.add_argument("--random-seed", type=int, default=1,
+                        help="Seed for shuffling unordered pairs before writing both directions. Default: 1.")
     args = parser.parse_args(argv)
 
     input_dir = Path(args.input_dir)
@@ -186,8 +239,10 @@ def main(argv=None):
         print(f"ERROR: --input-dir '{input_dir}' does not exist or is not a directory.", file=sys.stderr)
         return 2
 
-    output_root = Path(args.output_dir) if args.output_dir else (input_dir / "orders_out")
+    output_root = Path(args.output_dir)
     output_root.mkdir(parents=True, exist_ok=True)
+    output_name_map = load_output_name_map(resolve_repo_path(args.modules_csv))
+    simplified_dir = resolve_repo_path(args.simplified_dir)
 
     candidates = [p for p in sorted(input_dir.iterdir()) if p.is_file()]
     if not candidates:
@@ -198,7 +253,7 @@ def main(argv=None):
     summary_rows = []
     for file_path in candidates:
         try:
-            stats = write_orders_for_file(file_path, output_root, use_shorten, args.content)
+            stats = write_orders_for_file(file_path, output_root, use_shorten, args.content, output_name_map, simplified_dir, args.random_seed)
             summary_rows.append(stats)
             print(f"Processed: {file_path.name} -> {stats['num_orders']} orders in {stats['duration_seconds']}s")
         except Exception as e:

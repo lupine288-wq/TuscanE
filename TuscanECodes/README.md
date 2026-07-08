@@ -33,6 +33,16 @@ bash generate_orders.sh modules.csv inter
 - **Inputs:** `modules.csv`, `original-orders/`  
 - **Output test orders:** saved in `outputs/`
 
+## OD Detection
+
+After generating test orders, run OD detection on the `outputs/` folder:
+
+```bash
+python3 ../od_detection.py outputs
+```
+
+The detection results are written to `outputs/all_fail_results_tuscane.csv`.
+
 # Notes
 
 - Test names are automatically simplified before test order generation.
@@ -40,4 +50,3 @@ bash generate_orders.sh modules.csv inter
 
 - These simplified names can be found under the `simplified_original_test_orders/` folder.
 ---
-
