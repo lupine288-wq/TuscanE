@@ -1,0 +1,7 @@
+Characteristic,Group,n (modules),TuscanE vs. Random W/T/L,Mean orders to 1st OD - TuscanE,Mean orders to 1st OD - Random,Gain (Random/TuscanE),Wilcoxon p (one-sided)
+# tests,Small (<100),22,22/0/0,3.95,8.32,1.82,<0.001
+,Medium (100-499),14,11/0/3,5.93,8.16,1.34,0.055
+,Large (>=500),10,5/0/5,13.70,8.09,0.82,0.903
+# test classes,Few (<=5),10,10/0/0,3.80,10.23,2.02,<0.001
+,Moderate (6-49),24,21/0/3,4.96,7.06,1.46,0.002
+,Many (>=50),12,7/0/5,12.50,8.87,0.93,0.735
