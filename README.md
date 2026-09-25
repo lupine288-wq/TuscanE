@@ -1,3 +1,18 @@
+# ICSE 2026 Rebuttal Response
+
+## Reviewer.C.Question2
+
+Additional analysis of how project characteristics affect TuscanE is provided in two CSV tables in the root directory:
+
+- [`table_x_all_od_by_characteristic.csv`](table_x_all_od_by_characteristic.csv): **Table X — Cost of detecting all OD tests by suite characteristic**, grouped by number of tests, number of test classes, tests per class, and overhead/suite-runtime ratio.
+- [`table_y_first_od_by_characteristic.csv`](table_y_first_od_by_characteristic.csv): **Table Y — First-OD detection (TuscanE vs. Random)**, grouped by number of tests and test classes.
+
+**Table notation:** `IC` = Tuscan inter-class; `n` = number of modules; gains are baseline/TuscanE (values >1 favor TuscanE); `W/T/L` = TuscanE wins/ties/losses against Random; `KW p` = Kruskal–Wallis p-value comparing the characteristic groups; `Wilcoxon p` = one-sided paired Wilcoxon signed-rank p-value.
+
+## Reviewer.B.Comment6
+
+TuscanE test orders generated for the evaluated modules are available at [https://zenodo.org/records/22949445](https://zenodo.org/records/22949445).
+
 ## Artifact:
 
 1. Code for TuscanE to generate test-orders : inside the TuscanECodes/ directory
