@@ -1,0 +1,51 @@
+ID,Module,# tests,Orders Tuscan IC,Orders Pairwise,Orders TuscanE,Reduction vs Tuscan IC (x),Reduction vs Pairwise (x),Rank of # tests,Rank of reduction vs Tuscan IC,Rank of reduction vs Pairwise
+M1,activiti-spring-boot-starter,45,1794,1980,438,4.1,4.52,13,22,20
+M2,aismessages,44,1788,1892,361,4.95,5.24,12,27,26
+M3,c2mon-server-elasticsearch,19,312,342,97,3.22,3.53,5,18,15
+M4-1,compute,488,232368,237656,26090,8.91,9.11,36,39,38
+M4-2,request,325,101578,105300,16497,6.16,6.38,34,35,34
+M5,cukes-http,14,122,182,87,1.4,2.09,4,4,1
+M6,dropwizard-logging,80,5640,6320,1835,3.07,3.44,21,17,14
+M7-1,dubbo-cluster,112,11244,12432,3682,3.05,3.38,23,16,12
+M7-2,dubbo-common,520,261418,269880,47626,5.49,5.67,38,31,29
+M7-3,dubbo-config-api,263,64268,68906,13906,4.62,4.96,31,26,23
+M7-4,dubbo-filter-cache,9,70,72,30,2.33,2.4,2,11,4
+M7-5,dubbo-rpc-api,60,3386,3540,580,5.84,6.1,17,33,33
+M7-6,dubbo-rpc-dubbo,74,5036,5402,958,5.26,5.64,20,29,28
+M7-7,dubbo-serialization-fst,21,224,420,147,1.52,2.86,6,6,8
+M8,elastic-job-lite-core,511,256130,260610,24619,10.4,10.59,37,40,39
+M9-1,hadoop-auth,125,14270,15500,3820,3.74,4.06,25,19,17
+M9-2,hadoop-hdfs-nfs,64,3330,4032,1539,2.16,2.62,19,10,7
+M9-3,hadoop-mapreduce-client-app,394,148542,154842,29147,5.1,5.31,35,28,27
+M9-4,hadoop-mapreduce-client-core,293,82814,85556,17984,4.6,4.76,33,25,22
+M9-5,hadoop-mapreduce-client-hs,206,39500,42230,9329,4.23,4.53,27,23,21
+M10,hsac-fitnesse-fixtures,251,60816,62750,8900,6.83,7.05,30,36,35
+M11-1,integration-test-2,233,50658,54056,13177,3.84,4.1,28,20,18
+M11-2,integration-test-2,23,382,506,197,1.94,2.57,7.5,9,6
+M11-3,integration-test-3,24,316,552,222,1.42,2.49,9,5,5
+M11-4,integration-test-3,6,6,30,6,1,5,1,2,25
+M12,jhipster-registry,53,2572,2756,455,5.65,6.06,16,32,31
+M13,lib,163,644,26406,644,1,41,26,2,46
+M14,marine-api,926,841810,856550,50739,16.59,16.88,43,45,45
+M15,openpojo,1185,1392896,1403040,86349,16.13,16.25,45,44,43
+M16,org.wso2.carbon.apimgt.core,530,237882,280370,124083,1.92,2.26,39,8,2
+M17,portlet,61,3306,3660,842,3.93,4.35,18,21,19
+M18,riptide-spring-boot-starter,40,1512,1560,256,5.91,6.09,11,34,32
+M19-1,spring-boot,2255,5015642,5082770,612922,8.18,8.29,46,38,37
+M19-2,spring-boot-actuator-autoconfigure,733,531042,536556,49282,10.78,10.89,41,41,40
+M19-3,spring-boot-test,721,472332,519120,171633,2.75,3.02,40,13,11
+M19-4,spring-boot-test-autoconfigure,234,53474,54522,7491,7.14,7.28,29,37,36
+M20,spring-data-ebean,48,574,2256,574,1,3.93,14,2,16
+M21,spring-data-envers,10,58,90,38,1.53,2.37,3,7,3
+M22-1,spring-ws-core,971,932108,941870,56126,16.61,16.78,44,46,44
+M22-2,spring-ws-security,122,14452,14762,1063,13.6,13.89,24,43,42
+M23-1,naming,82,5712,6642,2281,2.5,2.91,22,12,10
+M23-2,subsystem,25,554,600,121,4.58,4.96,10,24,24
+M24,unix4j-command,290,79464,83810,14716,5.4,5.7,32,30,30
+M25-1,wdtk-dumpfiles,50,2116,2450,719,2.94,3.41,15,15,13
+M25-2,wdtk-util,23,492,506,174,2.83,2.91,7.5,14,9
+M26,wro4j-core,851,713822,723350,62889,11.35,11.5,42,42,41
+,,,,,,,,,,
+Spearman correlation,# tests vs. reduction in test-orders,Spearman rho,p-value,n,,,,,,
+,vs. Tuscan inter-class,0.662,5.38E-07,46,,,,,,
+,vs. Pairwise,0.615,5.52E-06,46,,,,,,

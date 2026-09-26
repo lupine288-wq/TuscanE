@@ -1,0 +1,32 @@
+,,Numbers of orders to detect the 1st OD,,,Time (in sec.) to detect the 1st OD,,,,,
+Github Slug,Module,Random,TuscanE,Simulated test-suite runtime (s),Actual Random,Simulated random,Actual TuscanE,Simulated TuscanE,Actual,Simulated
+https://github.com/apache/dubbo,dubbo-cluster,2.33,2,5.8,54.82,13.51,52.12,11.60,1.05,1.17
+https://github.com/apache/dubbo,dubbo-common,3,5,33.38,146.81,100.14,239.76,166.90,0.61,0.60
+https://github.com/apache/dubbo,dubbo-config-api,2.33,2,7.16,74.65,16.68,70.98,14.32,1.05,1.17
+https://github.com/apache/dubbo,dubbo-filter-cache,3.33,2,4.62,57.14,15.38,30.28,9.24,1.89,1.67
+https://github.com/apache/dubbo,dubbo-rpc-api,2.67,7,5.26,43.17,14.04,108.59,36.82,0.40,0.38
+https://github.com/apache/dubbo,dubbo-rpc-dubbo,5.67,3,201.04,1475.89,1139.90,729.14,603.12,2.02,1.89
+https://github.com/apache/dubbo,dubbo-serialization-fst,3,2,1.68,35.10,5.04,20.61,3.36,1.70,1.50
+https://github.com/Apache/Struts,portlet,2,2,2.82,56.72,5.64,55.79,5.64,1.02,1.00
+https://github.com/c2mon/c2mon,c2mon-server-elasticsearch,5.67,2,24.21,247.90,137.27,74.75,48.42,3.32,2.84
+https://github.com/Activiti/Activiti,activiti-spring-boot-starter,2,2,6.01,40.12,12.02,39.39,12.02,1.02,1.00
+https://github.com/apache/hadoop,hadoop-auth,4,7,104.13,520.92,416.52,899.23,728.91,0.58,0.57
+https://github.com/apache/hadoop,hadoop-hdfs-nfs,2,2,50.23,255.05,100.46,254.84,100.46,1.00,1.00
+https://github.com/apache/hadoop,hadoop-mapreduce-client-app,2.67,2,305.48,964.48,815.63,795.45,610.96,1.21,1.34
+https://github.com/apache/hadoop,hadoop-mapreduce-client-core,2,2,84,198.70,168.00,198.48,168.00,1.00,1.00
+https://github.com/apache/hadoop,hadoop-mapreduce-client-hs,2.33,10,76.51,507.08,178.27,2063.47,765.10,0.25,0.23
+https://github.com/ctco/cukes,cukes-http,3,2,2.2,28.37,6.60,16.03,4.40,1.77,1.50
+https://github.com/spring-projects/spring-ws,spring-ws-security,20,28,3.15,72.13,63.00,99.96,88.20,0.72,0.71
+https://github.com/tbsalling/aismessages,aismessages,2,2,1.24,4.59,2.48,4.15,2.48,1.11,1.00
+https://github.com/dropwizard/dropwizard,dropwizard-logging,32.67,15,5.9,235.43,192.75,95.13,88.50,2.47,2.18
+https://github.com/elasticjob/elastic-job-lite,elastic-job-lite-core,2.33,4,95.57,81.85,222.68,140.68,382.28,0.58,0.58
+https://github.com/fhoeben/hsac-fitnesse-fixtures,hsac-fitnesse-fixtures,7,7,11.03,44.71,77.21,42.86,77.21,1.04,1.00
+https://github.com/hexagonframework/spring-data-ebean,spring-data-ebean,71,7,3.47,350.56,246.37,29.68,24.29,11.81,10.14
+https://github.com/jhipster/jhipster-registry,jhipster-registry,2.33,2,10.12,36.99,23.58,28.41,20.24,1.30,1.17
+https://github.com/ktuukkan/marine-api,marine-api,33.67,42,2.07,104.35,69.70,128.66,86.94,0.81,0.80
+https://github.com/spring-projects/spring-boot,spring-boot-actuator-autoconfigure,2,2,37.7,194.54,75.40,186.23,75.40,1.04,1.00
+https://github.com/vmware/admiral,compute,16.33,11,147.57,4198.66,2409.82,2613.15,1623.27,1.61,1.48
+https://github.com/vmware/admiral,request,6,2,297.72,2807.04,1786.32,838.97,595.44,3.35,3.00
+https://github.com/wikidata/wikidata-toolkit,wdtk-dumpfiles,7.67,8,6.89,89.73,52.85,89.11,55.12,1.01,0.96
+https://github.com/wikidata/wikidata-toolkit,wdtk-util,2,2,1.79,14.19,3.58,13.53,3.58,1.05,1.00
+"Average*7, Geometric Mean*2",,8.72,6.41,53.06,446.27,288.65,343.43,221.11,119.21%,113.63%
