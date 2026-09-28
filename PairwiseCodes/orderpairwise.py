@@ -127,12 +127,14 @@ def build_short_names(originals: List[str]) -> Tuple[List[str], Dict[str, str], 
     return short_list, mapping, class_info
 
 def write_orders_for_file(input_file: Path, output_root: Path, use_shorten: bool, content_mode: str,
-                          output_name_map: Dict[str, str], simplified_dir: Path, random_seed: int) -> dict:
+                          output_name_map: Dict[str, str], simplified_dir: Path, random_seed: int,
+                          summary_only: bool) -> dict:
     start = time.time()
     originals = read_tests_from_file(input_file)
 
     out_dir = output_root / output_name_map.get(input_file.name, fallback_output_name(input_file))
-    out_dir.mkdir(parents=True, exist_ok=True)
+    if not summary_only:
+        out_dir.mkdir(parents=True, exist_ok=True)
 
     simplified_file = simplified_dir / input_file.name if simplified_dir else None
     if simplified_file and simplified_file.is_file() and content_mode == "short":
@@ -140,50 +142,65 @@ def write_orders_for_file(input_file: Path, output_root: Path, use_shorten: bool
         if len(name_for_file) != len(originals):
             raise ValueError(f"Length mismatch between {input_file} and {simplified_file}")
         mapping = {orig: short for orig, short in zip(originals, name_for_file)}
-        with (out_dir / "mapping.csv").open('w', encoding='utf-8', newline='') as mf:
-            w = csv.writer(mf)
-            w.writerow(["original", "short"])
-            for orig in originals:
-                w.writerow([orig, mapping[orig]])
-        with (out_dir / "normalized.txt").open('w', encoding='utf-8') as nf:
-            for s in name_for_file:
-                nf.write(s + "\n")
+        if not summary_only:
+            with (out_dir / "mapping.csv").open('w', encoding='utf-8', newline='') as mf:
+                w = csv.writer(mf)
+                w.writerow(["original", "short"])
+                for orig in originals:
+                    w.writerow([orig, mapping[orig]])
+            with (out_dir / "normalized.txt").open('w', encoding='utf-8') as nf:
+                for s in name_for_file:
+                    nf.write(s + "\n")
     elif use_shorten:
         short_list, mapping, class_info = build_short_names(originals)
         name_for_file = short_list  # used for pair generation and filenames
-        # Persist mapping CSV
-        with (out_dir / "mapping.csv").open('w', encoding='utf-8', newline='') as mf:
-            w = csv.writer(mf)
-            w.writerow(["original", "short"])
-            for orig in originals:
-                w.writerow([orig, mapping[orig]])
-        # Persist normalized (short) list for quick reference
-        with (out_dir / "normalized.txt").open('w', encoding='utf-8') as nf:
-            for s in short_list:
-                nf.write(s + "\n")
-        # Persist class mapping
-        with (out_dir / "classes.csv").open('w', encoding='utf-8', newline='') as cf:
-            w = csv.writer(cf)
-            w.writerow(["class_index", "class_name", "class_token"])
-            for cls in class_info:
-                idx, token = class_info[cls]
-                w.writerow([idx, cls, token])
+        if not summary_only:
+            # Persist mapping CSV
+            with (out_dir / "mapping.csv").open('w', encoding='utf-8', newline='') as mf:
+                w = csv.writer(mf)
+                w.writerow(["original", "short"])
+                for orig in originals:
+                    w.writerow([orig, mapping[orig]])
+            # Persist normalized (short) list for quick reference
+            with (out_dir / "normalized.txt").open('w', encoding='utf-8') as nf:
+                for s in short_list:
+                    nf.write(s + "\n")
+            # Persist class mapping
+            with (out_dir / "classes.csv").open('w', encoding='utf-8', newline='') as cf:
+                w = csv.writer(cf)
+                w.writerow(["class_index", "class_name", "class_token"])
+                for cls in class_info:
+                    idx, token = class_info[cls]
+                    w.writerow([idx, cls, token])
     else:
         mapping = {o: o for o in originals}
         name_for_file = originals
 
-    pairs_idx = list(itertools.combinations(range(len(name_for_file)), 2))
+    num_tests = len(name_for_file)
+    num_orders = num_tests * (num_tests - 1)
+    if summary_only:
+        duration = time.time() - start
+        return {
+            "input_file": str(input_file),
+            "num_tests": len(originals),
+            "num_orders": num_orders,
+            "duration_seconds": "",
+            "output_subfolder": str(out_dir),
+            "manifest_file": "",
+        }
+
+    pairs_idx = list(itertools.combinations(range(num_tests), 2))
     if random_seed is not None:
         random.Random(random_seed).shuffle(pairs_idx)
-    num_orders = len(pairs_idx) * 2
 
     # Determine content mode
     effective_mode = content_mode
     if not use_shorten and content_mode == "short":
         effective_mode = "original"
 
-    filenames = []
     round_idx = 0
+    manifest_path = out_dir / "manifest.txt"
+    manifest = manifest_path.open('w', encoding='utf-8')
     for i, j in pairs_idx:
         for first, second in ((i, j), (j, i)):
             if effective_mode == "short":
@@ -201,14 +218,9 @@ def write_orders_for_file(input_file: Path, output_root: Path, use_shorten: bool
             with fpath.open('w', encoding='utf-8') as f:
                 json.dump({"testOrder": [t1, t2]}, f)
 
-            filenames.append(fname)
+            manifest.write(fname + "\n")
             round_idx += 1
-
-    # Write manifest
-    manifest_path = out_dir / "manifest.txt"
-    with manifest_path.open('w', encoding='utf-8') as mf:
-        for name in filenames:
-            mf.write(name + "\n")
+    manifest.close()
 
     duration = time.time() - start
     return {
@@ -232,6 +244,8 @@ def main(argv=None):
                         help="What to write inside each order file. Default: short. If --no-shorten-names, coerced to original.")
     parser.add_argument("--random-seed", type=int, default=1,
                         help="Seed for shuffling unordered pairs before writing both directions. Default: 1.")
+    parser.add_argument("--summary-only", action="store_true",
+                        help="Only write summary.csv with num_tests and num_orders; do not create round*.json files.")
     args = parser.parse_args(argv)
 
     input_dir = Path(args.input_dir)
@@ -253,9 +267,12 @@ def main(argv=None):
     summary_rows = []
     for file_path in candidates:
         try:
-            stats = write_orders_for_file(file_path, output_root, use_shorten, args.content, output_name_map, simplified_dir, args.random_seed)
+            stats = write_orders_for_file(file_path, output_root, use_shorten, args.content, output_name_map, simplified_dir, args.random_seed, args.summary_only)
             summary_rows.append(stats)
-            print(f"Processed: {file_path.name} -> {stats['num_orders']} orders in {stats['duration_seconds']}s")
+            if args.summary_only:
+                print(f"Processed: {file_path.name} -> {stats['num_orders']} orders (summary only)")
+            else:
+                print(f"Processed: {file_path.name} -> {stats['num_orders']} orders in {stats['duration_seconds']}s")
         except Exception as e:
             print(f"ERROR processing {file_path}: {e}", file=sys.stderr)
 
