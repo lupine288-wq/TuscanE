@@ -1,14 +1,40 @@
+# Major Revision Results
+
+We provide the additional results used in the major revision below. See [`MajorRevisionResults/README.md`](MajorRevisionResults/README.md) for definitions and assumptions.
+
+## Metareview Comment1 — Differences and first-OD detection
+
+Additional per-module results are provided in:
+
+- [`D1_orders_to_cover_intra_and_class_pairs.csv`](MajorRevisionResults/D1_orders_to_cover_intra_and_class_pairs.csv): **D1. Prioritize generation phases.** Orders needed to complete intra-class and intra-class + class-pair coverage for TuscanE and Tuscan inter-class across 46 modules, including means and medians. The single-class M11-4 assumption is documented in the results README.
+- [`D2_interclass_pairs_per_order.csv`](MajorRevisionResults/D2_interclass_pairs_per_order.csv): **D2. Maximize inter-class pair coverage.** Newly covered inter-class pairs per order and Tuscan inter-class coverage at TuscanE's completion budget across 45 multi-class modules.
+- [`D3_redundant_pairs.csv`](MajorRevisionResults/D3_redundant_pairs.csv): **D3. Skip redundant coverage and tests.** Redundant adjacent-pair executions and orders containing redundant pairs for both techniques across 46 modules.
+- [`RQ3_first_OD_generation_phase.csv`](MajorRevisionResults/RQ3_first_OD_generation_phase.csv): first-OD detection occurs during the initial intra-class + class-pair phase in 45 of 46 modules; M21 requires the inter-class phase.
+
+## Metareview Comment2 — Per-order overhead
+
+- [`RQ1_overhead_share.csv`](MajorRevisionResults/RQ1_overhead_share.csv): per-module test-suite runtime and setup/teardown overhead. Average overhead is 8.88 seconds, or 27.60% of average test-suite runtime (32.17 seconds). This percentage is the ratio of means, not the mean of per-module percentages.
+
+## Metareview Comment3 — Real execution versus simulation
+
+- [`real_execution_40_modules.csv`](MajorRevisionResults/real_execution_40_modules.csv): expanded real-execution evaluation from 29 to **40 modules**, with TuscanE and Random first-OD detection times and the corresponding simulation times. Real-execution means are 394.82 seconds for TuscanE and 694.36 seconds for Random; simulation means are 208.09 and 269.94 seconds. Random takes 75.87% more time in real execution and 29.72% more in simulation. TuscanE is faster in 23 and 33 modules, respectively.
+
+The CSV contains one row per module; see the results README for column descriptions and excluded modules.
+
+## Reviewer.A.Comment2 and Reviewer.C.Question2 — Dataset and correlations
+
+- [`Threats_dataset_test_count_bins.csv`](MajorRevisionResults/Threats_dataset_test_count_bins.csv): 22 modules with fewer than 100 tests, 14 with 100–499 tests, and 10 with at least 500 tests.
+- [`tests_vs_reduction_in_test-orders.csv`](tests_vs_reduction_in_test-orders.csv) and [`test_classes_vs_reduction_in_test-orders.csv`](test_classes_vs_reduction_in_test-orders.csv): per-module inputs, ranks, and Spearman results. These existing rebuttal files also support the revision.
+
+The existing [`table_scripts/`](table_scripts/) contains the ablation and baseline table data.
+
 # ICSE 2026 Rebuttal Response
 
 Thank you for the feedback. We answer the explicit questions below and provide additional replication material and analyses used in our rebuttal.
 
 ## Reviewer.A.Question1
 
-Additional results from **actual test-order executions** are provided in:
-
-- [`random_vs_tuscane_actual_runs.csv`](random_vs_tuscane_actual_runs.csv): comparison of TuscanE and Random for first-OD detection on 29 modules, including actual and simulated detection times.
-
-These experiments validate that the trend observed in our simulated evaluation also holds during actual execution.
+The real-execution study has been expanded to 40 modules for the major revision. See [`MajorRevisionResults/real_execution_40_modules.csv`](MajorRevisionResults/real_execution_40_modules.csv) and the Metareview Comment3 description above.
 
 ## Reviewer.C.Question2
 

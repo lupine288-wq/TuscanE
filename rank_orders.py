@@ -972,7 +972,6 @@ if __name__ == "__main__":
     github_slug = input("Enter the github slug: ")
     module = input("Enter the module name (or press Enter to match any): ")
     #target_path_polluter_cleaner = input("Please enter the target path for polluter cleaner list: ")
-    target_path_polluter_cleaner = "/home/pious/Documents/rankOrder/RankOrders/all-polluter-cleaner-info-combined.csv"
     #filepath_no_orderlist=input("Please enter the target path for line no of orders: ")
     result,unique_od_test_list = get_victims_or_brittle(github_slug, module,target_path_polluter_cleaner)
     #print(result)
@@ -1037,7 +1036,6 @@ if __name__ == "__main__":
     #orders = [['a', 'b', 'c'], ['a', 'c', 'd']]
     order_sorted_copy= copy.deepcopy(orders)
     # Example file path (the user would need to replace this with the actual file path)
-    file_path_pairs = '/home/pious/Downloads/spring-data-envers-20231123T044304Z-001/spring-data-envers/pairs-5637994'
 
     # Reading tests from file and finding all pairs
     tests_with_fields = read_tests_from_file(file_path_pairs)
@@ -1099,7 +1097,6 @@ if __name__ == "__main__":
     # inter/intra-class fraction
     """ row.append(sorted_order_count)
 
-    output_file_approxcov="/home/pious/Documents/rankOrder/RankOrders/output.txt"
     approxcov_orders = copy.deepcopy(orders)
     copy_of_approxcov_results_sorted = copy.deepcopy(result)
     copy_of_approxcov_unique_od_test_list_sorted = copy.deepcopy(unique_od_test_list)

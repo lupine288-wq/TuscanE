@@ -1,0 +1,53 @@
+ID,Module,Tests,Test classes,Test-count bin
+M1,activiti-spring-boot-starter,45,11,<100
+M2,aismessages,44,18,<100
+M3,c2mon-server-elasticsearch,19,11,<100
+M4-1,compute,488,74,100-499
+M4-2,request,325,49,100-499
+M5,cukes-http,14,4,<100
+M6,dropwizard-logging,80,18,<100
+M7-1,dubbo-cluster,112,23,100-499
+M7-2,dubbo-common,520,70,>=500
+M7-3,dubbo-config-api,263,23,100-499
+M7-4,dubbo-filter-cache,9,5,<100
+M7-5,dubbo-rpc-api,60,23,<100
+M7-6,dubbo-rpc-dubbo,74,16,<100
+M7-7,dubbo-serialization-fst,21,4,<100
+M8,elastic-job-lite-core,511,98,>=500
+M9-1,hadoop-auth,125,22,100-499
+M9-2,hadoop-hdfs-nfs,64,12,<100
+M9-3,hadoop-mapreduce-client-app,394,49,100-499
+M9-4,hadoop-mapreduce-client-core,293,60,100-499
+M9-5,hadoop-mapreduce-client-hs,206,26,100-499
+M10,hsac-fitnesse-fixtures,251,49,100-499
+M11-1,integration-test-2_1,233,40,100-499
+M11-2,integration-test-2_2,23,4,<100
+M11-3,integration-test-3_10,24,3,<100
+M11-4,integration-test-3_7,6,1,<100
+M12,jhipster-registry,53,14,<100
+M13,lib,163,2,100-499
+M14,marine-api,926,71,>=500
+M15,openpojo,1185,213,>=500
+M16,org.wso2.carbon.apimgt.core,530,46,>=500
+M17,portlet,61,12,<100
+M18,riptide-spring-boot-starter,40,25,<100
+M19-1,spring-boot,2255,230,>=500
+M19-2,spring-boot-actuator-autoconfigure,733,166,>=500
+M19-3,spring-boot-test,721,115,>=500
+M19-4,spring-boot-test-autoconfigure,234,103,100-499
+M20,spring-data-ebean,48,2,<100
+M21,spring-data-envers,10,4,<100
+M22-1,spring-ws-core,971,145,>=500
+M22-2,spring-ws-security,122,43,100-499
+M23-1,naming,82,11,<100
+M23-2,subsystem,25,10,<100
+M24,unix4j-command,290,30,100-499
+M25-1,wdtk-dumpfiles,50,9,<100
+M25-2,wdtk-util,23,5,<100
+M26,wro4j-core,851,137,>=500
+
+# <100,22
+# 100-499,14
+# >=500,10
+
+# total modules,46

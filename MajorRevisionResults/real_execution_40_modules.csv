@@ -1,0 +1,53 @@
+id,module,real_tuscane_sec,real_random_sec,sim_tuscane_sec,sim_random_sec
+M1,activiti-spring-boot-starter,39.8,39.0,12.02,13.22
+M2,aismessages,15.9,15.6,2.49,3.86
+M3,c2mon-server-elasticsearch,81.8,80.2,48.43,123.49
+M4-1,compute,5009.6,9999.4,1623.24,3364.52
+M4-2,request,1393.1,3633.6,595.45,1518.39
+M5,cukes-http,20.1,23.4,4.4,8.58
+M6,dropwizard-logging,213.1,136.5,88.53,100.92
+M7-1,dubbo-cluster,31.1,56.0,11.6,13.34
+M7-2,dubbo-common,237.6,276.9,166.91,113.5
+M7-3,dubbo-config-api,73.4,129.2,14.31,127.35
+M7-4,dubbo-filter-cache,27.5,76.6,9.26,14.79
+M7-5,dubbo-rpc-api,94.0,58.9,36.82,43.13
+M7-6,dubbo-rpc-dubbo,718.3,1393.2,603.1,964.96
+M7-7,dubbo-serialization-fst,33.6,78.0,3.38,6.92
+M8,elastic-job-lite-core,216.7,102.3,382.3,200.71
+M9-1,hadoop-auth,1228.5,699.9,728.93,531.08
+M9-2,hadoop-hdfs-nfs,340.9,146.4,100.47,135.64
+M9-3,hadoop-mapreduce-client-app,829.7,4059.9,610.96,733.15
+M9-4,hadoop-mapreduce-client-core,190.2,266.1,168.0,235.21
+M9-5,hadoop-mapreduce-client-hs,1922.5,727.5,765.09,191.27
+M10,hsac-fitnesse-fixtures,49.2,111.1,77.25,79.46
+M11-1,integration-test-2_1,119.9,214.4,74.66,160.53
+M12,jhipster-registry,56.9,110.3,20.24,34.41
+M13,lib,16.6,13.8,3.14,4.08
+M14,marine-api,354.7,287.7,87.3,61.32
+M15,openpojo,84.6,66.1,43.49,55.08
+M16,org.wso2.carbon.apimgt.core,61.9,72.6,169.09,219.82
+M17,portlet,50.3,29.4,5.64,7.61
+M18,riptide-spring-boot-starter,58.3,56.7,16.64,24.13
+M19-1,spring-boot,754.1,2505.6,1357.07,917.05
+M19-2,spring-boot-actuator-autoconfigure,182.2,175.0,75.4,94.25
+M19-3,spring-boot-test,104.5,196.9,30.42,51.71
+M19-4,spring-boot-test-autoconfigure,190.2,278.5,124.86,162.31
+M20,spring-data-ebean,96.1,810.1,24.32,198.03
+M21,spring-data-envers,188.8,249.4,63.29,68.98
+M22-2,spring-ws-security,296.0,40.8,88.16,106.1
+M23-1,naming,224.4,404.7,7.06,8.12
+M24,unix4j-command,85.6,89.6,21.09,16.34
+M25-1,wdtk-dumpfiles,85.9,33.9,55.14,77.19
+M25-2,wdtk-util,15.3,29.0,3.58,6.98
+
+# summary,statistic,real_tuscane_sec,real_random_sec,sim_tuscane_sec,sim_random_sec
+# mean,seconds,394.82,694.36,208.09,269.94
+# modules,40
+# comparison,real execution,simulation
+# Random extra time relative to TuscanE (%),75.87,29.72
+# modules where TuscanE is faster,23,33
+# excluded module count,6
+# exclusion reason reported in paper,compilation issues
+# previous real-execution study modules reported in response,29
+# additional real-execution modules reported in response,11
+# Random repetitions per module reported in paper,3
